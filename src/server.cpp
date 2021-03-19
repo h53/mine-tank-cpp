@@ -168,19 +168,21 @@ void SendStr(int connfd, std::string str)
 
     size_t nleft = *len + 2;
     std::cout << "need to send " << nleft << std::endl;
-    int nsend = 0;
     while (nleft > 0)
     {
+        int nsend = 0;
         //std::cout << "sending " << nleft << "bytes" << std::endl;
-        if (nsend = (write(connfd, sendByte + nsend, nleft)) < 0)
+        if ((nsend = send(connfd, sendByte + nsend, nleft,0)) < 0)
         {
             if (errno == EINTR)
                 continue;
             ERROR_EXIT("send");
         }
-        else if (nsend == 0)
-            //continue;
-            break;
+        else if (nsend == 0){
+            continue;
+            std::cout << "connection closed!" << std::endl;
+        }
+
         nleft -= nsend;
         std::cout << "sended " << nsend << " left " << nleft << std::endl;
     }
